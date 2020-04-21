@@ -2,8 +2,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-const char *ssid     = "GombaNetwork";
-const char *password = "Wrona#@!123";
+const char *ssid     = "name of your wifi";
+const char *password = "wifi password";
 
 const long utcOffsetInSeconds = 3600;
 
