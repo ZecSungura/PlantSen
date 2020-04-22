@@ -4,9 +4,6 @@
 #include <SPI.h>
 #include <SD.h>
 
-
-
-File myFile;
 #define DHTPIN 2
 #define DHTTYPE DHT22
 DHT dht (DHTPIN,DHTTYPE);
@@ -50,9 +47,33 @@ void setup()
   }
 }
 
+/*
+ {
+    "id": 123,
+    "hum": 0.1,
+    "temp": 10,
+    "light": {
+       "r": 10,
+       "g": 20,
+       "b": 30
+    }
+ }
+*/
+
+void saveMeasurementToFile(int m_id, float hum, float temp, int r, int g, int b) {
+    File myFile = SD.open("measurement" + m_id + ".json", FILE_WRITE); // measurement_1.json => measurement_2020-04-22-17-28-01.11.json
+    char buffer[100];
+    sprintf(buffer, "{\"id\": %d, \"hum\": %f, \"temp\": %d, \"light\": { \"r\": %d, \"g\": %d, \b\": %d } }", m_id, hum, temp, r, g, b)
+    myFile.print(buffer)
+    myFile.close();
+}
+
+
 // Read sensor values for each color and print them to serial monitor
 void loop()
-{ 
+{
+  m_id++;
+
   hum = dht.readHumidity();
   temp = dht.readTemperature();
   // Read sensor values (16 bit integers)
@@ -60,7 +81,6 @@ void loop()
   unsigned int green = RGB_sensor.readGreen();
   unsigned int blue = RGB_sensor.readBlue();
 
-    myFile = SD.open("test.txt", FILE_WRITE);
   if (myFile) {
     Serial.print("Writing to test.txt...");
     myFile.print("Measurement ID: ");
@@ -78,7 +98,7 @@ void loop()
     myFile.println(blue,DEC);
     myFile.println();
     delay(2000);
-    m_id++;
+
     // close the file:
     myFile.close();
     Serial.println("done.");
